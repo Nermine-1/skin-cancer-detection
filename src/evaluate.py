@@ -6,7 +6,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib
 matplotlib.use('Agg')  # Utiliser un backend non-gui
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 
 # Noms des classes
 CLASS_NAMES = ["akiec", "bcc", "bkl", "df", "mel", "nv", "vasc"]
@@ -58,17 +58,23 @@ cm = confusion_matrix(y_true, predictions)
 
 # Visualiser la matrice de confusion
 plt.figure(figsize=(10, 8))
-sns.heatmap(
-    cm,
-    annot=True,
-    fmt='d',
-    cmap='Blues',
-    xticklabels=CLASS_NAMES,
-    yticklabels=CLASS_NAMES
-)
-plt.title('Confusion Matrix')
-plt.ylabel('True Label')
-plt.xlabel('Predicted Label')
+im = plt.imshow(cm, interpolation='nearest', cmap='Blues')
+plt.colorbar(im)
+plt.title('Confusion Matrix', fontsize=14, fontweight='bold')
+plt.ylabel('True Label', fontsize=12)
+plt.xlabel('Predicted Label', fontsize=12)
+plt.xticks(range(len(CLASS_NAMES)), CLASS_NAMES, rotation=45, ha='right')
+plt.yticks(range(len(CLASS_NAMES)), CLASS_NAMES)
+
+# Add text annotations
+thresh = cm.max() / 2.
+for i in range(len(CLASS_NAMES)):
+    for j in range(len(CLASS_NAMES)):
+        plt.text(j, i, format(cm[i, j], 'd'),
+                horizontalalignment="center",
+                color="white" if cm[i, j] > thresh else "black",
+                fontsize=10)
+
 plt.tight_layout()
 plt.savefig(os.path.join(OUTPUT_DIR, "confusion_matrix.png"), dpi=300)
 plt.close()

@@ -1,0 +1,17 @@
+Test Accuracy: 0.5686 (56.86%)
+Test Loss: 1.4867
+
+Classification Report:
+              precision    recall  f1-score   support
+
+       akiec     0.2222    0.0615    0.0964        65
+         bcc     0.1875    0.0291    0.0504       103
+         bkl     0.4863    0.3227    0.3880       220
+          df     0.0238    0.0435    0.0308        23
+         mel     0.3084    0.4619    0.3698       223
+          nv     0.8750    0.6943    0.7742      1341
+        vasc     0.0679    0.9286    0.1265        28
+
+    accuracy                         0.5686      2003
+   macro avg     0.3102    0.3631    0.2623      2003
+weighted avg     0.6916    0.5686    0.6100      2003
