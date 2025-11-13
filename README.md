@@ -279,6 +279,9 @@ The model classifies skin lesions into 7 categories:
 | `nv` | Melanocytic nevi | Benign moles |
 | `vasc` | Vascular lesions | Blood vessel lesions |
 
+<img width="825" height="855" alt="image" src="https://github.com/user-attachments/assets/88835707-10ab-463e-94ef-4370bc8fa5be" />
+
+
 ## 🤝 Contributing
 
 Contributions are welcome! If you'd like to contribute to this project:
