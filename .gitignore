@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Environnements virtuels
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Modèles et données lourdes
+*.h5
+*.keras
+data/HAM10000/HAM10000_images_part_*
