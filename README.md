@@ -23,12 +23,15 @@ This project implements a CNN-based classifier for detecting and classifying ski
 
 ## ✨ Features
 
-- **Deep Learning Model**: CNN architecture with multiple convolutional layers
+- **Improved Deep Learning Model**: Enhanced CNN architecture with batch normalization and deeper layers
 - **7-Class Classification**: Classifies skin lesions into 7 different types
+- **Data Augmentation**: Rotation, shifting, zooming, and flipping for better generalization
+- **Class Weight Balancing**: Handles imbalanced dataset automatically
+- **Advanced Training**: Early stopping, learning rate scheduling, and model checkpointing
+- **Comprehensive Evaluation**: Detailed metrics including confusion matrix, precision, recall, and F1-score per class
 - **Data Preprocessing**: Automatic image resizing and normalization
-- **Model Training**: Automated training with validation and checkpointing
 - **Prediction Pipeline**: Easy-to-use prediction function for new images
-- **Evaluation Tools**: Comprehensive evaluation with visualization of predictions
+- **Training History Visualization**: Plot accuracy and loss curves
 - **Stratified Splitting**: Ensures balanced train/test splits
 
 ## 📊 Dataset
@@ -55,18 +58,26 @@ data/
 
 ## 🏗️ Model Architecture
 
-The model uses a sequential CNN architecture with the following layers:
+The model uses an improved sequential CNN architecture with batch normalization and deeper layers:
 
-1. **Conv2D** (32 filters, 3x3 kernel) + ReLU activation
-2. **MaxPooling2D** (2x2)
-3. **Conv2D** (64 filters, 3x3 kernel) + ReLU activation
-4. **MaxPooling2D** (2x2)
-5. **Conv2D** (128 filters, 3x3 kernel) + ReLU activation
-6. **MaxPooling2D** (2x2)
-7. **Flatten**
-8. **Dense** (128 units) + ReLU activation
-9. **Dropout** (0.5)
-10. **Dense** (7 units) + Softmax activation
+### Convolutional Blocks:
+1. **Conv2D** (32 filters, 3x3) + **BatchNormalization** + ReLU + MaxPooling2D + Dropout(0.25)
+2. **Conv2D** (64 filters, 3x3) + **BatchNormalization** + ReLU + MaxPooling2D + Dropout(0.25)
+3. **Conv2D** (128 filters, 3x3) + **BatchNormalization** + ReLU + MaxPooling2D + Dropout(0.25)
+4. **Conv2D** (256 filters, 3x3) + **BatchNormalization** + ReLU + MaxPooling2D + Dropout(0.25)
+
+### Fully Connected Layers:
+5. **Flatten**
+6. **Dense** (256 units) + **BatchNormalization** + ReLU + Dropout(0.5)
+7. **Dense** (128 units) + ReLU + Dropout(0.5)
+8. **Dense** (7 units) + Softmax activation
+
+**Key Improvements:**
+- ✅ Batch Normalization for stable training
+- ✅ Deeper architecture (4 conv blocks + 2 dense layers)
+- ✅ Progressive dropout regularization
+- ✅ Data augmentation during training
+- ✅ Class weights for imbalanced data
 
 **Input Shape**: (64, 64, 3) RGB images  
 **Output**: 7-class probability distribution  
@@ -123,9 +134,12 @@ python train.py
 
 The training process will:
 - Load and preprocess the data
-- Build the CNN model
-- Train for 25 epochs with validation split of 20%
+- Calculate class weights to handle imbalanced dataset
+- Build the improved CNN model with batch normalization
+- Apply data augmentation (rotation, shifting, zooming, flipping)
+- Train with early stopping (patience=10) and learning rate scheduling
 - Save the best model to `models/skin_cancer_model.h5` based on validation accuracy
+- Save training history to `models/training_history.pkl`
 
 ### Making Predictions
 
@@ -160,21 +174,30 @@ python evaluate.py
 This will:
 - Load the trained model
 - Evaluate on the test set
-- Display test loss and accuracy
-- Generate visualization images with predictions saved in `evaluation_results/`
+- Display comprehensive metrics: accuracy, loss, precision, recall, F1-score
+- Generate confusion matrix visualization
+- Show per-class performance metrics
+- Save classification report and sample predictions in `evaluation_results/`
 
 ### Visualizing Training History
 
 To plot training history (accuracy and loss curves):
 
+```bash
+cd src
+python utils.py
+```
+
+Or in Python:
+
 ```python
 from utils import plot_history
-import pickle
 
-# Load training history (if saved)
-# history = pickle.load(open('history.pkl', 'rb'))
-# plot_history(history)
+# Plot from saved history file
+plot_history('../models/training_history.pkl')
 ```
+
+This generates training curves showing accuracy and loss over epochs, saved to `evaluation_results/training_history.png`.
 
 ## 📁 Project Structure
 
@@ -216,6 +239,8 @@ The project requires the following Python packages:
 - `matplotlib` - Visualization
 - `scikit-learn` - Machine learning utilities
 - `tensorflow` - Deep learning framework
+- `seaborn` - Statistical data visualization
+- `Pillow` - Image processing
 
 Install all dependencies using:
 ```bash
@@ -226,11 +251,19 @@ pip install -r requirements.txt
 
 After training, the model evaluation results are saved in the `evaluation_results/` directory. The evaluation script generates:
 
-- Test accuracy and loss metrics
-- Visualization images showing predictions vs. ground truth labels
-- Sample predictions on test images
+- **Overall Metrics**: Test accuracy and loss
+- **Confusion Matrix**: Visual heatmap showing classification performance
+- **Per-Class Metrics**: Precision, Recall, and F1-score for each class
+- **Classification Report**: Detailed text report saved to `classification_report.txt`
+- **Sample Predictions**: Visualization images with predictions vs. ground truth labels
+- **Training Curves**: Accuracy and loss plots over training epochs
 
-**Note**: Actual performance metrics depend on the training process and may vary. Check the evaluation output for specific accuracy and loss values.
+**Expected Performance**: With the improved architecture and training techniques, the model should achieve:
+- Overall accuracy: **>80%** (target: 85%+)
+- Balanced performance across all 7 classes
+- Good generalization with data augmentation
+
+**Note**: Actual performance metrics depend on the training process and may vary. Run `python src/evaluate.py` to see your model's specific metrics.
 
 ## 🏷️ Class Labels
 
