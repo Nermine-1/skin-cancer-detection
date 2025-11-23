@@ -20,6 +20,8 @@ A deep learning-based skin cancer classification system that uses Convolutional 
 ## 🎯 Overview
 
 This project implements a CNN-based classifier for detecting and classifying skin cancer lesions. The model is trained on the HAM10000 dataset, which contains over 10,000 dermatoscopic images of skin lesions. The system can classify skin lesions into 7 different categories, aiding in early detection and diagnosis of skin cancer.
+<img width="557" height="609" alt="image" src="https://github.com/user-attachments/assets/eb88b88f-4f6e-4e3c-a6bf-6e23851a3cbc" />
+
 
 ## ✨ Features
 
@@ -279,7 +281,6 @@ The model classifies skin lesions into 7 categories:
 | `nv` | Melanocytic nevi | Benign moles |
 | `vasc` | Vascular lesions | Blood vessel lesions |
 
-<img width="825" height="855" alt="image" src="https://github.com/user-attachments/assets/88835707-10ab-463e-94ef-4370bc8fa5be" />
 
 
 ## 🤝 Contributing
