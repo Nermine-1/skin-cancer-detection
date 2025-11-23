@@ -1,18 +1,22 @@
-version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
+    # mount models and data into the container for development convenience
     volumes:
-      - ./:/app:ro
+      - ./models:/app/models:ro
+      - ./data:/app/data:ro
     ports:
       - '8000:8000'
     environment:
       - PYTHONUNBUFFERED=1
 
+ 
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - '3000:3000'
     environment:
