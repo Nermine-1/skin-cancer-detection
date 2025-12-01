@@ -14,7 +14,7 @@ except Exception:
     tf = None
     TF_AVAILABLE = False
 
-from .utils import preprocess_image, load_label_mapping
+from utils import preprocess_image, load_label_mapping
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 MODEL_PATH = os.path.join(ROOT, "models", "skin_cancer_model.h5")

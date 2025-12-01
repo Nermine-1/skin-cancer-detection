@@ -1,6 +1,50 @@
 import React, {useState, useEffect} from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Background particles component
+function BackgroundEffects() {
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 6 + 2,
+    left: Math.random() * 100,
+    delay: Math.random() * 20,
+  }))
+
+  const shapes = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    type: ['triangle', 'square', 'circle'][Math.floor(Math.random() * 3)],
+    left: Math.random() * 100,
+    delay: Math.random() * 25,
+  }))
+
+  return (
+    <div className="particles">
+      {particles.map((particle) => (
+        <div
+          key={particle.id}
+          className="particle"
+          style={{
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            left: `${particle.left}%`,
+            animationDelay: `${particle.delay}s`,
+          }}
+        />
+      ))}
+      {shapes.map((shape) => (
+        <div
+          key={`shape-${shape.id}`}
+          className={`geometric-shape ${shape.type}`}
+          style={{
+            left: `${shape.left}%`,
+            animationDelay: `${shape.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function TopBar({label, confidence}){
   return (
     <motion.div className="topbar" initial={{opacity:0}} animate={{opacity:1}}>
@@ -10,14 +54,57 @@ function TopBar({label, confidence}){
   )
 }
 
-function ProbBar({label, value, i}){
+function ProbBar({label, value, i, isTopPrediction}){
+  const percentage = value * 100;
+  const getBarColor = () => {
+    if (percentage >= 70) return 'var(--success)';
+    if (percentage >= 30) return 'var(--warning)';
+    return 'var(--error)';
+  };
+
   return (
-    <motion.div className="prob-row" initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} transition={{delay: i*0.06}}>
+    <motion.div
+      className={`prob-row ${isTopPrediction ? 'top-prediction' : ''}`}
+      initial={{opacity:0, x:-20, scale: 0.95}}
+      animate={{opacity:1, x:0, scale: 1}}
+      transition={{
+        delay: i*0.08,
+        duration: 0.5,
+        type: "spring",
+        stiffness: 100
+      }}
+      whileHover={{ scale: 1.02 }}
+    >
       <div className="prob-label">{label}</div>
       <div className="prob-track">
-        <motion.div className="prob-fill" initial={{width:0}} animate={{width: `${Math.max(2, value*100)}%`}} transition={{duration:0.6}} />
+        <motion.div
+          className="prob-fill"
+          initial={{width:0}}
+          animate={{
+            width: `${Math.max(2, percentage)}%`,
+            background: `linear-gradient(90deg, ${getBarColor()}, ${getBarColor()}dd)`
+          }}
+          transition={{
+            duration: 1.2,
+            delay: i*0.08 + 0.2,
+            ease: "easeOut"
+          }}
+        />
+        <motion.div
+          className="prob-glow"
+          initial={{opacity: 0}}
+          animate={{opacity: percentage > 50 ? 0.3 : 0}}
+          transition={{delay: i*0.08 + 0.5, duration: 0.3}}
+        />
       </div>
-      <div className="prob-val">{(value*100).toFixed(1)}%</div>
+      <motion.div
+        className="prob-val"
+        initial={{opacity: 0, scale: 0.8}}
+        animate={{opacity: 1, scale: 1}}
+        transition={{delay: i*0.08 + 0.8, duration: 0.3}}
+      >
+        {percentage.toFixed(1)}%
+      </motion.div>
     </motion.div>
   )
 }
@@ -59,12 +146,92 @@ export default function App(){
 
   return (
     <div className="container creative">
+      <BackgroundEffects />
+
+      {/* Loading Overlay */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="loading-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="loading-content">
+              <div className="loading-spinner-large"></div>
+              <div className="loading-text">Analyzing Image</div>
+              <div className="loading-subtext">AI is processing your skin image...</div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showOnboard && (
           <motion.div className="onboard" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
-            <motion.h2 initial={{y:-20}} animate={{y:0}} transition={{delay:0.05}}>Welcome to SkinScope</motion.h2>
-            <motion.p initial={{y:-10, opacity:0}} animate={{y:0, opacity:1}} transition={{delay:0.12}}>Drag an image or click to upload — watch the model explain its prediction with animated insights.</motion.p>
-            <motion.button onClick={()=>setShowOnboard(false)} whileHover={{scale:1.03}} whileTap={{scale:0.98}}>Get started</motion.button>
+            <motion.div className="onboard-content" initial={{scale:0.9, opacity:0}} animate={{scale:1, opacity:1}} transition={{delay:0.1, duration:0.5}}>
+              <motion.h2
+                initial={{y:-30, opacity:0}}
+                animate={{y:0, opacity:1}}
+                transition={{delay:0.2, duration:0.6}}
+              >
+                Welcome to SkinScope
+              </motion.h2>
+              <motion.p
+                initial={{y:-20, opacity:0}}
+                animate={{y:0, opacity:1}}
+                transition={{delay:0.4, duration:0.6}}
+              >
+                Advanced AI-powered skin cancer detection with real-time analysis
+              </motion.p>
+
+              <motion.div
+                className="features"
+                initial={{opacity:0}}
+                animate={{opacity:1}}
+                transition={{delay:0.6, duration:0.6}}
+              >
+                <motion.div
+                  className="feature-item"
+                  initial={{x:-20, opacity:0}}
+                  animate={{x:0, opacity:1}}
+                  transition={{delay:0.7, duration:0.4}}
+                >
+                  <div className="feature-icon">🔬</div>
+                  <span>AI-Powered Analysis</span>
+                </motion.div>
+                <motion.div
+                  className="feature-item"
+                  initial={{x:-20, opacity:0}}
+                  animate={{x:0, opacity:1}}
+                  transition={{delay:0.8, duration:0.4}}
+                >
+                  <div className="feature-icon">⚡</div>
+                  <span>Instant Results</span>
+                </motion.div>
+                <motion.div
+                  className="feature-item"
+                  initial={{x:-20, opacity:0}}
+                  animate={{x:0, opacity:1}}
+                  transition={{delay:0.9, duration:0.4}}
+                >
+                  <div className="feature-icon">📊</div>
+                  <span>Detailed Probabilities</span>
+                </motion.div>
+              </motion.div>
+
+              <motion.button
+                onClick={()=>setShowOnboard(false)}
+                whileHover={{scale:1.05, boxShadow: "0 8px 25px rgba(139, 92, 246, 0.4)"}}
+                whileTap={{scale:0.95}}
+                initial={{y:20, opacity:0}}
+                animate={{y:0, opacity:1}}
+                transition={{delay:1.0, duration:0.4}}
+              >
+                Start Analyzing
+              </motion.button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -86,8 +253,17 @@ export default function App(){
         </div>
 
         <div className="controls">
-          <button className="analyze" onClick={submit} disabled={loading || !file}>{loading ? 'Analyzing…' : 'Analyze'}</button>
-          <button className="clear" onClick={()=>{setFile(null); setPreview(null); setResult(null)}}>Clear</button>
+          <button className="analyze" onClick={submit} disabled={loading || !file}>
+            {loading ? (
+              <>
+                <div className="loading-spinner"></div>
+                Analyzing…
+              </>
+            ) : (
+              'Analyze'
+            )}
+          </button>
+          <button className="clear" onClick={()=>{setFile(null); setPreview(null); setResult(null)}} disabled={loading}>Clear</button>
         </div>
       </div>
 
@@ -109,7 +285,13 @@ export default function App(){
                     <h4>Probabilities</h4>
                     <div className="probs">
                       {Array.isArray(result.probabilities) && (result.classes || Array.from({length: result.probabilities.length}, (_,i)=>`Class ${i}`)).map((lab, i)=> (
-                        <ProbBar key={i} label={(result.classes||[])[i] ?? lab} value={result.probabilities[i]} i={i} />
+                        <ProbBar
+                          key={i}
+                          label={(result.classes||[])[i] ?? lab}
+                          value={result.probabilities[i]}
+                          i={i}
+                          isTopPrediction={i === 0 && result.probabilities[i] === Math.max(...result.probabilities)}
+                        />
                       ))}
                     </div>
                   </div>

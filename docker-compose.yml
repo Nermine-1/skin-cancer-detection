@@ -1,8 +1,8 @@
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     # mount models and data into the container for development convenience
     volumes:
       - ./models:/app/models:ro
