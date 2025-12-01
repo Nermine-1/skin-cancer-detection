@@ -16,7 +16,7 @@ except Exception:
 
 from utils import preprocess_image, load_label_mapping
 
-ROOT = os.path.dirname(os.path.dirname(__file__))
+ROOT = os.path.dirname(__file__)
 MODEL_PATH = os.path.join(ROOT, "models", "skin_cancer_model.h5")
 METADATA_PATH = os.path.join(ROOT, "data", "HAM10000", "HAM10000_metadata.csv")
 
