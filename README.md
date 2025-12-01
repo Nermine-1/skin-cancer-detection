@@ -1,4 +1,4 @@
-# 🏥 Skin Cancer Detection using Deep Learning
+# 🏥 Skin Cancer Detection 
 
 A deep learning-based skin cancer classification system that uses Convolutional Neural Networks (CNN) to classify skin lesions into 7 different types using the HAM10000 dataset.
 
